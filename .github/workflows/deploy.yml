@@ -12,13 +12,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t abouirdi/mlops-databricks-demo:latest .
-          docker push abouirdi/mlops-databricks-demo:latest
+      - name: Install Databricks CLI
+        run: pip install databricks-cli
+
+      - name: Upload train.py to DBFS
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_INSTANCE }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks fs cp train.py dbfs:/FileStore/train.py
 
       - name: Deploy to Databricks
         env:
