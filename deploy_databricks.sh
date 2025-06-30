@@ -11,3 +11,5 @@ curl -X POST https://${DATABRICKS_INSTANCE}/api/2.1/jobs/create \
   -H "Content-Type: application/json" \
   -d @job_config.json
 
+databricks fs cp train.py dbfs:/FileStore/train.py
+
