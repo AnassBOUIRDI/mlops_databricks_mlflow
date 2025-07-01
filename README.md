@@ -50,33 +50,39 @@ docker run --rm abouirdi/mlops-databricks-demo:latest
 
 ## 3. Déploiement sur Databricks (mode serverless)
 
-### a) Uploader le script sur DBFS
+### a) Déploiement via Databricks Bundle (recommandé)
 
-Assure-toi d'avoir le Databricks CLI installé et configuré :
+1. **Mettre à jour la configuration Databricks CLI**
 
-```bash
-pip install databricks-cli
-# Configure avec : databricks configure --token
+Assure-toi que le fichier `~/.databrickscfg` est bien configuré avec l'URL de ton workspace et un token valide :
 
-databricks fs cp train.py dbfs:/FileStore/train.py --overwrite
+```ini
+[DEFAULT]
+host = https://<ton-instance>.cloud.databricks.com
+token = dapiXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
-### b) Adapter la configuration du job
-
-Vérifie que `job_config.json` est au format serverless (voir exemple dans ce repo).
-
-### c) Déployer le job
-
+Pour configurer :
 ```bash
-bash deploy_databricks.sh
+databricks configure --token
 ```
 
-Le job s'appelle **ML MLOps Serverless Job** et apparaîtra dans l'interface Databricks.
+2. **Déployer et exécuter le job avec le bundle**
+
+```bash
+pip install --upgrade databricks-cli
+
+databricks bundle deploy
+
+databricks bundle run train-job
+```
+
+Le script `train.py` sera automatiquement uploadé sur DBFS et le job sera lancé sur un cluster serverless minimal.
 
 ---
 
 ## Dépannage
-- Vérifie que le script est bien uploadé sur DBFS.
-- Vérifie que les variables d'environnement sont bien définies.
+- Vérifie que le script est bien uploadé sur DBFS (automatique avec le bundle).
+- Vérifie que les variables d'environnement ou le fichier `.databrickscfg` sont bien définis.
 - Le token doit avoir les droits nécessaires.
 - Pour Docker, remplace `abouirdi` par ton nom Docker Hub si besoin.

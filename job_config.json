@@ -1,11 +1,17 @@
 {
   "name": "ML MLOps Serverless Job",
-  "new_cluster": {
-    "spark_version": "13.3.x-scala2.12",
-    "node_type_id": "Standard_DS3_v2",
-    "num_workers": 1
-  },
-  "spark_python_task": {
-    "python_file": "dbfs:/FileStore/train.py"
-  }
+  "tasks": [
+    {
+      "task_key": "train_model",
+      "new_cluster": {
+        "spark_version": "13.3.x-scala2.12",
+        "num_workers": 1,
+        "data_security_mode": "SINGLE_USER",
+        "runtime_engine": "PHOTON"
+      },
+      "spark_python_task": {
+        "python_file": "dbfs:/FileStore/train.py"
+      }
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-name: Upload to Databricks DBFS
+name: Deploy and Run Databricks Bundle
 
 on:
   push:
@@ -6,27 +6,26 @@ on:
       - main
 
 jobs:
-  upload-to-dbfs:
+  deploy-and-run-bundle:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+      - name: Install Databricks CLI (new)
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | bash
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
 
-      - name: Install Databricks CLI
-        run: pip install databricks-cli
-
-      - name: Add Databricks CLI path
-        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Upload train.py to DBFS
+      - name: Configure Databricks CLI auth
         env:
-          DATABRICKS_HOST: https://${{ secrets.DATABRICKS_INSTANCE }}
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          databricks fs cp train.py dbfs:/FileStore/train.py --overwrite
+          databricks auth login --host "$DATABRICKS_HOST" --token "$DATABRICKS_TOKEN"
+
+      - name: Deploy Databricks Bundle
+        run: databricks bundle deploy
+
+      - name: Run Databricks Job
+        run: databricks bundle run train-job
