@@ -1,10 +1,11 @@
+# .github/workflows/deploy.yml
 name: Deploy and Run Databricks Bundle
 
 on:
-  workflow_dispatch:  # exécution manuelle uniquement
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy-and-run-bundle:
@@ -20,20 +21,18 @@ jobs:
       - name: Check Databricks CLI version
         run: databricks version
 
-      - name: Configure Databricks CLI authentication
-        run: echo "Authentication configured via environment variables"
+      - name: Configure Databricks CLI auth
+        run: |
+          mkdir -p ~/.databricks
+          echo "[DEFAULT]" > ~/.databrickscfg
+          echo "host = https://${DATABRICKS_HOST}" >> ~/.databrickscfg
+          echo "token = ${DATABRICKS_TOKEN}" >> ~/.databrickscfg
         env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}   # sans le "https://"
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
       - name: Validate Databricks Bundle
         run: databricks bundle validate
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
       - name: Deploy Databricks Bundle
         run: databricks bundle deploy
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
