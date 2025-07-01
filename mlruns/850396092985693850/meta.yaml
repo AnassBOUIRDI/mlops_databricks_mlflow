@@ -1,6 +1,0 @@
-artifact_location: file:///Users/anassbouirdi/Documents/perso/github_perso/mlops_databricks_mlflow/mlruns/850396092985693850
-creation_time: 1751393533807
-experiment_id: '850396092985693850'
-last_update_time: 1751393533807
-lifecycle_stage: active
-name: diabetes-linear-regression
