@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: Deploy and Run Databricks Bundle
 
 on:
@@ -11,6 +10,10 @@ jobs:
   deploy-and-run-bundle:
     runs-on: ubuntu-latest
 
+    env:  # 👈 AUTH via ENV VARS (recommandé)
+      DATABRICKS_HOST: https://${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,16 +23,6 @@ jobs:
 
       - name: Check Databricks CLI version
         run: databricks version
-
-      - name: Configure Databricks CLI auth
-        run: |
-          mkdir -p ~/.databricks
-          echo "[DEFAULT]" > ~/.databrickscfg
-          echo "host = ${DATABRICKS_HOST}" >> ~/.databrickscfg
-          echo "token = ${DATABRICKS_TOKEN}" >> ~/.databrickscfg
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
       - name: Validate Databricks Bundle
         run: databricks bundle validate
