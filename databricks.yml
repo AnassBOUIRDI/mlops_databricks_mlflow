@@ -10,7 +10,7 @@ resources:
           description: "Train diabetes regression model"
           new_cluster:
             spark_version: 13.3.x-scala2.12
-            node_type_id: Standard_DS2_v2   # 4 vCPU, 14 Go RAM (Azure)
+            node_type_id: Standard_B1s  # 4 vCPU, 14 Go RAM (Azure)
             num_workers: 0
             data_security_mode: SINGLE_USER
             runtime_engine: STANDARD        # ❌ Pas PHOTON (plus coûteux)
