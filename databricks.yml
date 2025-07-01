@@ -19,5 +19,12 @@ resources:
               spark.master: local[*]
             custom_tags:
               ResourceClass: SingleNode
+          libraries:
+            - pypi:
+                package: mlflow==2.13.0
+            - pypi:
+                package: scikit-learn==1.4.2
+            - pypi:
+                package: pandas==2.2.2
           spark_python_task:
             python_file: /Workspace/Users/anass.b.compt@gmail.com/.bundle/mlops-train-job/default/files/src/train.py
