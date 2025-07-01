@@ -25,7 +25,7 @@ jobs:
         run: |
           mkdir -p ~/.databricks
           echo "[DEFAULT]" > ~/.databrickscfg
-          echo "host = https://${DATABRICKS_HOST}" >> ~/.databrickscfg
+          echo "host = ${DATABRICKS_HOST}" >> ~/.databrickscfg
           echo "token = ${DATABRICKS_TOKEN}" >> ~/.databrickscfg
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
