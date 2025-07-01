@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:  # 👈 AUTH via ENV VARS (recommandé)
-      DATABRICKS_HOST: https://${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
