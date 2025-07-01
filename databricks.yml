@@ -11,8 +11,9 @@ resources:
           new_cluster:
             spark_version: 13.3.x-scala2.12
             node_type_id: Standard_DS3_v2  # 4 vCPU, 14 Go RAM (Azure)
-            num_workers: 1
+            num_workers: 0
             data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD        # ❌ Pas PHOTON (plus coûteux)
           spark_python_task:
             python_file: /Workspace/Users/anass.b.compt@gmail.com/.bundle/mlops-train-job/default/files/src/train.py 
 
