@@ -1,13 +1,14 @@
-# .github/workflows/deploy.yml
-name: Deploy ML to Databricks
+name: Upload to Databricks DBFS
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  upload-to-dbfs:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,15 +21,12 @@ jobs:
       - name: Install Databricks CLI
         run: pip install databricks-cli
 
+      - name: Add Databricks CLI path
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
       - name: Upload train.py to DBFS
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_INSTANCE }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: databricks fs cp train.py dbfs:/FileStore/train.py
-
-      - name: Deploy to Databricks
-        env:
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          DATABRICKS_INSTANCE: ${{ secrets.DATABRICKS_INSTANCE }}
-        run: bash deploy_databricks.sh
-
+        run: |
+          databricks fs cp train.py dbfs:/FileStore/train.py --overwrite
