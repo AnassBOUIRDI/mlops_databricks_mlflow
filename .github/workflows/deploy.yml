@@ -24,6 +24,9 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: List test files
+        run: ls -R
+
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
@@ -57,4 +60,6 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: databricks bundle deploy
+
+      
 
