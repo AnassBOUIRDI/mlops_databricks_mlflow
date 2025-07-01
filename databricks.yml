@@ -4,17 +4,20 @@ bundle:
 resources:
   jobs:
     train-job:
-      name: ML MLOps Smallest Non-Photon Job (Bundle)
+      name: ML MLOps Small Job
       tasks:
         - task_key: train_model
           description: "Train diabetes regression model"
           new_cluster:
             spark_version: 13.3.x-scala2.12
-            node_type_id: Standard_DS4_v2  # 4 vCPU, 14 Go RAM (Azure)
+            node_type_id: Standard_D3_v2  # 4 vCPU, 14 Go RAM (Azure)
             num_workers: 0
             data_security_mode: SINGLE_USER
-            runtime_engine: STANDARD        # ❌ Pas PHOTON (plus coûteux)
+            runtime_engine: STANDARD
+            spark_conf:
+              spark.databricks.cluster.profile: singleNode
+              spark.master: local[*]
+            custom_tags:
+              ResourceClass: SingleNode
           spark_python_task:
-            python_file: /Workspace/Users/anass.b.compt@gmail.com/.bundle/mlops-train-job/default/files/src/train.py 
-
-
+            python_file: /Workspace/Users/anass.b.compt@gmail.com/.bundle/mlops-train-job/default/files/src/train.py
