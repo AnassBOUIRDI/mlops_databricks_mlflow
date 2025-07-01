@@ -8,15 +8,13 @@ on:
 jobs:
   deploy-and-run-bundle:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Databricks CLI (new)
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | bash
-          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
-          export PATH="$HOME/.databricks/bin:$PATH"
+      - name: Install Databricks CLI (v2)
+        uses: databricks/setup-cli@v1
 
       - name: Check Databricks CLI version
         run: databricks version
@@ -30,6 +28,3 @@ jobs:
 
       - name: Deploy Databricks Bundle
         run: databricks bundle deploy
-
-      - name: Run Databricks Job
-        run: databricks bundle run train-job
