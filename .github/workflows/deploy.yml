@@ -16,6 +16,10 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | bash
           echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.databricks/bin:$PATH"
+
+      - name: Check Databricks CLI version
+        run: databricks version
 
       - name: Configure Databricks CLI auth
         env:
