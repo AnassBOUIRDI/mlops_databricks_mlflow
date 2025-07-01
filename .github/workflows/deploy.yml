@@ -26,7 +26,7 @@ jobs:
 
       - name: Upload train.py to DBFS
         env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_INSTANCE }}
+          DATABRICKS_HOST: https://${{ secrets.DATABRICKS_INSTANCE }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           databricks fs cp train.py dbfs:/FileStore/train.py --overwrite
