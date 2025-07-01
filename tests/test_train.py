@@ -1,10 +1,11 @@
+from unittest import mock
 import pytest
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import train
-from unittest import mock
 from sklearn.linear_model import LinearRegression
+from src import train
+
 
 @mock.patch("mlflow.sklearn.log_model")
 @mock.patch("mlflow.log_metric")

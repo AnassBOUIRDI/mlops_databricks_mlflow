@@ -5,7 +5,8 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY train.py /app/train.py
+COPY src/ /app/src/
+WORKDIR /app/src
 
 CMD ["python", "train.py"]
 
