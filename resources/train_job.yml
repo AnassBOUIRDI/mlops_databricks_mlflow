@@ -1,13 +1,14 @@
 jobs:
   train-job:
-    name: ML MLOps Serverless Job (Bundle)
+    name: ML MLOps Light Job
     tasks:
       - task_key: train_model
         description: "Train diabetes regression model"
         new_cluster:
           spark_version: 13.3.x-scala2.12
           num_workers: 1
+          node_type_id: Standard_DS3_v2  # 💡 plus petit nœud possible sur Azure
           data_security_mode: SINGLE_USER
-          runtime_engine: PHOTON
+          runtime_engine: STANDARD        # ❌ Pas PHOTON (plus coûteux)
         spark_python_task:
-          python_file: dbfs:/FileStore/train.py 
+          python_file: dbfs:/FileStore/train.py
