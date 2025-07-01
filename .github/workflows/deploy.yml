@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
   workflow_dispatch:
 
 jobs:
@@ -18,14 +19,42 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest
+
       - name: Install Databricks CLI (v2)
         uses: databricks/setup-cli@main
 
       - name: Check Databricks CLI version
         run: databricks version
 
+      - name: Configure Databricks CLI auth
+        run: |
+          mkdir -p ~/.databricks
+          echo "[DEFAULT]" > ~/.databrickscfg
+          echo "host = ${DATABRICKS_HOST}" >> ~/.databrickscfg
+          echo "token = ${DATABRICKS_TOKEN}" >> ~/.databrickscfg
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
       - name: Validate Databricks Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: databricks bundle validate
 
       - name: Deploy Databricks Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: databricks bundle deploy
+
