@@ -1,10 +1,10 @@
+from ml_model import train
 from unittest import mock
 import pytest
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from sklearn.linear_model import LinearRegression
-from src import train
 
 
 @mock.patch("mlflow.sklearn.log_model")
@@ -25,8 +25,8 @@ def test_train_main_mocks(mock_set_experiment, mock_start_run, mock_log_metric, 
     # Vérifie que le modèle a bien été loggué
     assert mock_log_model.call_count == 1
 
-# def test_train_runs_without_error():
-#     try:
-#         train.main()
-#     except Exception as e:
-#         pytest.fail(f"train.main() raised an exception: {e}") 
+def test_train_runs_without_error():
+    try:
+        train.main()
+    except Exception as e:
+        pytest.fail(f"train.main() raised an exception: {e}") 

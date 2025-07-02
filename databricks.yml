@@ -1,10 +1,16 @@
 bundle:
   name: mlops-train-job
 
+artifacts:
+  default:
+    type: whl
+    path: .
+    build: python3 setup.py bdist_wheel
+
 resources:
   jobs:
     train-job:
-      name: ML MLOps Small Job
+      name: ML MLOps Small Job3
       tasks:
         - task_key: train_model
           description: "Train diabetes regression model"
@@ -20,6 +26,7 @@ resources:
             custom_tags:
               ResourceClass: SingleNode
           libraries:
+            - whl: ./dist/*.whl
             - pypi:
                 package: mlflow==2.13.0
             - pypi:
@@ -27,4 +34,4 @@ resources:
             - pypi:
                 package: pandas==2.2.2
           spark_python_task:
-            python_file: /Workspace/Users/anass.b.compt@gmail.com/.bundle/mlops-train-job/default/files/src/train.py
+            python_file: src/ml_model/train.py

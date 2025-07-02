@@ -5,8 +5,8 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src/ /app/src/
-WORKDIR /app/src
+COPY src/ml_model/ /app/src/ml_model/
+WORKDIR /app/src/ml_model
 
 CMD ["python", "train.py"]
 
