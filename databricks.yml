@@ -10,7 +10,7 @@ artifacts:
 resources:
   jobs:
     train-job:
-      name: ML MLOps Small Job3
+      name: ML MLOps train job  
       tasks:
         - task_key: train_model
           description: "Train diabetes regression model"
@@ -35,3 +35,58 @@ resources:
                 package: pandas==2.2.2
           spark_python_task:
             python_file: src/ml_model/train.py
+
+    train-register-job:
+      name: train-register-job
+      tasks:
+        - task_key: train_register_model
+          description: "Train diabetes regression model"
+          new_cluster:
+            spark_version: 13.3.x-scala2.12
+            node_type_id: Standard_D4ds_v5  # 4 vCPU, 14 Go RAM (Azure)
+            num_workers: 0
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            spark_conf:
+              spark.databricks.cluster.profile: singleNode
+              spark.master: local[*]
+            custom_tags:
+              ResourceClass: SingleNode
+          libraries:
+            - whl: ./dist/*.whl
+            - pypi:
+                package: mlflow==2.13.0
+            - pypi:
+                package: scikit-learn==1.4.2
+            - pypi:
+                package: pandas==2.2.2
+          spark_python_task:
+            python_file: src/ml_model/train.py
+
+    run-model:
+      name: ML Run Registered Model
+      tasks:
+        - task_key: run_model
+          description: "Load model from registry and predict"
+          new_cluster:
+            spark_version: 13.3.x-scala2.12
+            node_type_id: Standard_D4ds_v5
+            num_workers: 0
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            spark_conf:
+              spark.databricks.cluster.profile: singleNode
+              spark.master: local[*]
+            custom_tags:
+              ResourceClass: SingleNode
+          libraries:
+            - whl: ./dist/*.whl
+            - pypi:
+                package: mlflow==2.13.0
+            - pypi:
+                package: scikit-learn==1.4.2
+            - pypi:
+                package: pandas==2.2.2
+          spark_python_task:
+            python_file: src/ml_model/run.py
+   

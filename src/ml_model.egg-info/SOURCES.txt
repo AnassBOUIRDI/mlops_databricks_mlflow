@@ -1,7 +1,9 @@
 README.md
 setup.py
 src/ml_model/__init__.py
+src/ml_model/run.py
 src/ml_model/train.py
+src/ml_model/train_register.py
 src/ml_model.egg-info/PKG-INFO
 src/ml_model.egg-info/SOURCES.txt
 src/ml_model.egg-info/dependency_links.txt
