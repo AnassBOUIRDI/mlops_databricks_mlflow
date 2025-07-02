@@ -20,7 +20,7 @@ def test_train_main_mocks(mock_set_experiment, mock_start_run, mock_log_metric, 
     train.main()
 
     # Vérifie que l'expérience MLflow est bien définie
-    mock_set_experiment.assert_called_once_with("diabetes-linear-regression")
+    mock_set_experiment.assert_called_once_with("/Users/anass.b.compt@gmail.com/diabetes-linear-regression")
     # Vérifie que le log du score a été appelé
     assert mock_log_metric.call_count == 1
     # Vérifie que le modèle a bien été loggué
