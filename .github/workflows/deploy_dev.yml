@@ -1,0 +1,61 @@
+name: Deploy and Run Databricks Bundle
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  deploy-and-run-bundle:
+    runs-on: ubuntu-latest
+
+    env:  # 👈 AUTH via ENV VARS (recommandé)
+      DATABRICKS_HOST: https://${{ secrets.DATABRICKS_INSTANCE }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests
+
+      - name: Install Databricks CLI (v2)
+        uses: databricks/setup-cli@main
+
+      - name: Check Databricks CLI version
+        run: databricks version
+
+      - name: Configure Databricks CLI auth
+        run: |
+          mkdir -p ~/.databricks
+          echo "[DEFAULT]" > ~/.databrickscfg
+          echo "host = ${DATABRICKS_HOST}" >> ~/.databrickscfg
+          echo "token = ${DATABRICKS_TOKEN}" >> ~/.databrickscfg
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_INSTANCE }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+      - name: Validate Databricks Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_INSTANCE }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks bundle validate
+
+      - name: Deploy Databricks Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_INSTANCE }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks bundle deploy
+
+      
+
