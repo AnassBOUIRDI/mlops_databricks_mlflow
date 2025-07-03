@@ -8,7 +8,7 @@ Ce projet montre comment entraîner un modèle ML avec MLflow et le déployer su
 - Docker (optionnel)
 - Un compte Databricks avec droits de création de jobs et accès à l'API
 - Un token d'accès Databricks (`DATABRICKS_TOKEN`)
-- L'URL de ton workspace Databricks (`DATABRICKS_INSTANCE`)  --
+- L'URL de ton workspace Databricks (`DATABRICKS_INSTANCE`)  -
 
 ---
 
