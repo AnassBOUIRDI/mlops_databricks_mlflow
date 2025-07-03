@@ -3,7 +3,7 @@ name: Deploy ML to Databricks
 
 on:
   push:
-    branches: [ main ]
+    branches: [ develop ]
 
 jobs:
   build-and-deploy:
