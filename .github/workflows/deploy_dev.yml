@@ -10,7 +10,7 @@ jobs:
   deploy-and-run-bundle:
     runs-on: ubuntu-latest
 
-    env:  # 👈 AUTH via ENV VARS (recommandé)
+    env:  # 👈 AUTH via ENV V ARS (recommandé)
       DATABRICKS_HOST: https://${{ secrets.DATABRICKS_INSTANCE }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
