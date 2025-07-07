@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
+      - develop 
   workflow_dispatch:
 
 jobs:
@@ -23,11 +26,23 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Check if tests should be skipped
+        id: check_skip
+        run: |
+          echo "skip_tests=false" >> $GITHUB_OUTPUT
+          if [[ "${{ github.event.pull_request.title }}" == *skip* ]] || [[ "${{ github.event.pull_request.body }}" == *skip* ]]; then
+            echo "⚠️ Detected 'skip' flag in PR title or body. Skipping unit tests."
+            echo "skip_tests=true" >> $GITHUB_OUTPUT
+          fi
+        if: github.event_name == 'pull_request'
+
       - name: Install Python dependencies
         run: pip install -r requirements.txt
+        if: steps.check_skip.outputs.skip_tests != 'true' || github.event_name != 'pull_request'
 
       - name: Run unit tests
         run: pytest tests
+        if: steps.check_skip.outputs.skip_tests != 'true' || github.event_name != 'pull_request'
 
       - name: Install Databricks CLI (v2)
         uses: databricks/setup-cli@main
