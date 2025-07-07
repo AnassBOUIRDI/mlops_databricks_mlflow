@@ -10,7 +10,7 @@ artifacts:
 resources:
   jobs:
     train-job:
-      name: ML MLOps train job  
+      name: ML MLOps train job 2 
       tasks:
         - task_key: train_model
           description: "Train diabetes regression model"
@@ -37,7 +37,7 @@ resources:
             python_file: src/ml_model/train.py
 
     train-register-job:
-      name: train-register-job
+      name: train-register-job_2
       tasks:
         - task_key: train_register_model
           description: "Train diabetes regression model"
@@ -61,10 +61,10 @@ resources:
             - pypi:
                 package: pandas==2.2.2
           spark_python_task:
-            python_file: src/ml_model/train.py
+            python_file: src/ml_model/train_register.py
 
     run-model:
-      name: ML Run Registered Model
+      name: ML_RUN_2
       tasks:
         - task_key: run_model
           description: "Load model from registry and predict"
