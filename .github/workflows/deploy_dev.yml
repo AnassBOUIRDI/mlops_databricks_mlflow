@@ -30,8 +30,19 @@ jobs:
         id: check_skip
         run: |
           echo "skip_tests=false" >> $GITHUB_OUTPUT
+
+          # Check title or body
           if [[ "${{ github.event.pull_request.title }}" == *skip* ]] || [[ "${{ github.event.pull_request.body }}" == *skip* ]]; then
-            echo "⚠️ Detected 'skip' flag in PR title or body. Skipping unit tests."
+            echo "skip_tests=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check for 'skip_tests' label using GitHub API
+          labels=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "${{ github.event.pull_request._links.self.href }}/labels" | jq -r '.[].name')
+
+          if echo "$labels" | grep -q "skip_tests"; then
             echo "skip_tests=true" >> $GITHUB_OUTPUT
           fi
         if: github.event_name == 'pull_request'

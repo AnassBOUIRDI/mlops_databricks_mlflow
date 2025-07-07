@@ -1,9 +1,9 @@
 # .github/workflows/deploy.yml
-name: Deploy ML to Databricks
+name: Deploy to docker_dbx
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
