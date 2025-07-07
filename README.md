@@ -1,4 +1,4 @@
-#  mlops_databricks_mlflow
+# mlops_databricks_mlflow
 
 ## Présentation
 Ce projet montre comment entraîner un modèle ML avec MLflow et le déployer sur Databricks via un job serverless ou en utilisant Docker.
