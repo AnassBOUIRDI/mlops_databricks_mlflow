@@ -29,6 +29,9 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
       - name: Check if tests should be skipped
         id: check_skip
         if: github.event_name == 'pull_request'
@@ -55,10 +58,6 @@ jobs:
           fi
 
           echo "skip_tests=$SKIP_TESTS" >> "$GITHUB_OUTPUT"
-
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-        if: steps.check_skip.outputs.skip_tests != 'true' || github.event_name != 'pull_request'
 
       - name: Run unit tests
         run: pytest tests
