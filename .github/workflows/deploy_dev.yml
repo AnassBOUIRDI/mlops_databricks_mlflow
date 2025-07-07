@@ -31,6 +31,7 @@ jobs:
 
       - name: Check if tests should be skipped
         id: check_skip
+        if: github.event_name == 'pull_request'
         run: |
           SKIP_TESTS=false
 
@@ -56,9 +57,9 @@ jobs:
           fi
 
           echo "skip_tests=$SKIP_TESTS" >> "$GITHUB_OUTPUT"
-        if: github.event_name == 'pull_request'
         outputs:
           skip_tests: ${{ steps.check_skip.outputs.skip_tests }}
+
 
 
 
