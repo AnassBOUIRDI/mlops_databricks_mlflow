@@ -21,6 +21,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -33,19 +36,27 @@ jobs:
 
           # Check title or body
           if [[ "${{ github.event.pull_request.title }}" == *skip* ]] || [[ "${{ github.event.pull_request.body }}" == *skip* ]]; then
+            echo "⚠️ Found 'skip' in title or body"
             echo "skip_tests=true" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Check for 'skip_tests' label using GitHub API
+          # Fetch PR number dynamically
+          PR_NUMBER=${{ github.event.pull_request.number }}
+
+          # Check for 'skip_tests' label via GitHub API
           labels=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            "${{ github.event.pull_request._links.self.href }}/labels" | jq -r '.[].name')
+            "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/labels")
 
-          if echo "$labels" | grep -q "skip_tests"; then
+          echo "Fetched labels: $labels"
+
+          if echo "$labels" | jq -r '.[].name' | grep -q "skip_tests"; then
+            echo "Found skip_tests label"
             echo "skip_tests=true" >> $GITHUB_OUTPUT
           fi
         if: github.event_name == 'pull_request'
+
 
       - name: Install Python dependencies
         run: pip install -r requirements.txt
