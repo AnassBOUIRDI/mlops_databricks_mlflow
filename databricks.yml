@@ -7,6 +7,12 @@ artifacts:
     path: .
     build: python3 setup.py bdist_wheel
 
+targets:
+  dev:
+    workspace:
+      root_path: /Workspace/.bundle/mlops_databricks_mlflow
+
+
 resources:
   jobs:
     train-job:
