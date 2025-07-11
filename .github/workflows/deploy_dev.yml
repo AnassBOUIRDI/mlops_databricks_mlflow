@@ -4,19 +4,25 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
+      - develop
   workflow_dispatch:
 
 jobs:
   deploy-and-run-bundle:
     runs-on: ubuntu-latest
 
-    env:  # 👈 AUTH via ENV V ARS (recommandé)
+    env:
       DATABRICKS_HOST: https://${{ secrets.DATABRICKS_INSTANCE }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -26,8 +32,36 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Check if tests should be skipped
+        id: check_skip
+        if: github.event_name == 'pull_request'
+        run: |
+          SKIP_TESTS=false
+
+          # Check title or body
+          if [[ "${{ github.event.pull_request.title }}" == *skip* ]] || [[ "${{ github.event.pull_request.body }}" == *skip* ]]; then
+            echo "⚠️ Found 'skip' in title or body"
+            SKIP_TESTS=true
+          else
+            PR_NUMBER=${{ github.event.pull_request.number }}
+
+            labels=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/labels")
+
+            echo "Fetched labels: $labels"
+
+            if echo "$labels" | jq -r '.[].name' | grep -Ei "skip(_tests)?"; then
+              echo "✅ Found skip label"
+              SKIP_TESTS=true
+            fi
+          fi
+
+          echo "skip_tests=$SKIP_TESTS" >> "$GITHUB_OUTPUT"
+
       - name: Run unit tests
         run: pytest tests
+        if: steps.check_skip.outputs.skip_tests != 'true' || github.event_name != 'pull_request'
 
       - name: Install Databricks CLI (v2)
         uses: databricks/setup-cli@main
@@ -46,16 +80,7 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
       - name: Validate Databricks Bundle
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_INSTANCE }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: databricks bundle validate
 
       - name: Deploy Databricks Bundle
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_INSTANCE }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: databricks bundle deploy
-
-      
-
