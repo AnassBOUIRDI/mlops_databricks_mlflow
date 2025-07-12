@@ -1,6 +1,7 @@
 README.md
 setup.py
 src/ml_model/__init__.py
+src/ml_model/request_endpoint_ml.py
 src/ml_model/run.py
 src/ml_model/train.py
 src/ml_model/train_register.py
