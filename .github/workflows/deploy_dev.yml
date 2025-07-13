@@ -84,4 +84,5 @@ jobs:
         run: databricks bundle validate
 
       - name: Deploy Databricks Bundle
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
         run: databricks bundle deploy
