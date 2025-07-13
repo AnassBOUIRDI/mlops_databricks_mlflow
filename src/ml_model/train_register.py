@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 
 def main():
-    mlflow.set_experiment("/Users/models_experiments/diabetes-linear-regression")
+    mlflow.set_experiment("../models_experiments/diabetes-linear-regression")
 
     with mlflow.start_run() as run:
         data = load_diabetes(as_frame=True)
