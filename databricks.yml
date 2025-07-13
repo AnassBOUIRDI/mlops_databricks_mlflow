@@ -70,7 +70,7 @@ resources:
             python_file: src/ml_model/train_register.py
 
     run-model:
-      name: ML_RUN_2
+      name: job_run_model_uri
       tasks:
         - task_key: job_run_model_uri
           description: "Load model from registry and predict"
