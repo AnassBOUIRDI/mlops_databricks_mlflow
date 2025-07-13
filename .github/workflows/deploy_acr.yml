@@ -1,0 +1,21 @@
+name: Deploy to Azure Container Registry
+
+on:
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure Container Registry (ACR)
+        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_LOGIN_SERVER }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
+
+      - name: Build and push Docker image to ACR
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/mlops-databricks-demo:latest .
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/mlops-databricks-demo:latest
