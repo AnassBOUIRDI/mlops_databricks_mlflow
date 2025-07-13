@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  build-push-image-deploy-main-databricks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,10 +19,3 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mlops-databricks-demo:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/mlops-databricks-demo:latest
-
-      - name: Deploy to Databricks
-        env:
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          DATABRICKS_INSTANCE: ${{ secrets.DATABRICKS_INSTANCE }}
-        run: bash deploy_databricks.sh
-
