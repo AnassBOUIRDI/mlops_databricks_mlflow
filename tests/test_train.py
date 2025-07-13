@@ -8,11 +8,14 @@ from ml_model import train
 from sklearn.linear_model import LinearRegression
 
 
+@mock.patch("mlflow.sklearn.save_model")
+@mock.patch("joblib.dump")
+@mock.patch("os.makedirs")
 @mock.patch("mlflow.sklearn.log_model")
 @mock.patch("mlflow.log_metric")
 @mock.patch("mlflow.start_run")
 @mock.patch("mlflow.set_experiment")
-def test_train_main_mocks(mock_set_experiment, mock_start_run, mock_log_metric, mock_log_model):
+def test_train_main_mocks(mock_set_experiment, mock_start_run, mock_log_metric, mock_log_model, mock_makedirs, mock_joblib_dump, mock_save_model):
     # On mocke le contexte de run MLflow
     mock_start_run.return_value.__enter__.return_value = None
 
@@ -25,9 +28,9 @@ def test_train_main_mocks(mock_set_experiment, mock_start_run, mock_log_metric, 
     assert mock_log_metric.call_count == 1
     # Vérifie que le modèle a bien été loggué
     assert mock_log_model.call_count == 1
+    
+    # Vérifie que les fonctions de sauvegarde locale ont été appelées (car RUN_LOCAL = True)
+    mock_makedirs.assert_called_once_with("model", exist_ok=True)
+    mock_joblib_dump.assert_called_once()
+    mock_save_model.assert_called_once()
 
-def test_train_runs_without_error():
-    try:
-        train.main()
-    except Exception as e:
-        pytest.fail(f"train.main() raised an exception: {e}") 
