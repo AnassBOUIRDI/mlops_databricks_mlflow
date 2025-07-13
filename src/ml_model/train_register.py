@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 
 def main():
-    mlflow.set_experiment("/Users/anass.b.compt@gmail.com/diabetes-linear-regression")
+    mlflow.set_experiment("/Users/models_experiments/diabetes-linear-regression")
 
     with mlflow.start_run() as run:
         data = load_diabetes(as_frame=True)
@@ -18,11 +18,19 @@ def main():
 
         mlflow.log_metric("r2_score", score)
 
-        # Enregistrement dans le Model Registry
+        # Signature : input = DataFrame, output = prédiction (float)
+        signature = infer_signature(X_train, model.predict(X_train))
+
+        # Exemple d'entrée
+        input_example = X_train.iloc[:5]
+
+        # Enregistrement avec signature & input_example
         mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="model",
-            registered_model_name="model_name_1"  # <-- Ce nom sera utilisé dans run.py
+            registered_model_name="model_name_1",
+            signature=signature,
+            input_example=input_example
         )
 
         print(f"R² on test set: {score:.4f}")
