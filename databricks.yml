@@ -61,7 +61,7 @@ resources:
           libraries:
             - whl: ./dist/*.whl
             - pypi:
-                package: mlflow==2.13.0
+                package: "mlflow[databricks]==2.13.0"
             - pypi:
                 package: scikit-learn==1.4.2
             - pypi:
